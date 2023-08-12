@@ -19,7 +19,12 @@ const formSchema = z.object({
 });
 
 export function AuthLoginForm() {
-  const register = api.auth.register.useMutation();
+  const login = api.auth.login.useMutation({
+    onSuccess: (data) => {
+      console.log("Logged in…");
+      console.log(data);
+    },
+  });
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -35,7 +40,7 @@ export function AuthLoginForm() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
-    register.mutate(values);
+    login.mutate(values);
   }
 
   return (

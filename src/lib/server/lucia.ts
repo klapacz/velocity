@@ -18,7 +18,6 @@ export const auth = lucia({
   },
   getUserAttributes: (user) => ({
     email: user.email,
-    // HACK: we store the user id as a number in the database, but lucia expects a string
-    id: user.id as unknown as number,
   }),
+  getSessionAttributes: (session) => ({}),
 });

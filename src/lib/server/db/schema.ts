@@ -1,11 +1,11 @@
 import { InferModel, relations } from "drizzle-orm";
-import { sqliteTable, text, blob, integer } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, blob } from "drizzle-orm/sqlite-core";
 
 export type User = InferModel<typeof user>;
 export type UserAttributes = Omit<User, "id">;
 export const user = sqliteTable("user", {
-  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  email: text("email").unique(),
+  id: text("id").primaryKey(),
+  email: text("email").unique().notNull(),
 });
 
 export const usersRelations = relations(user, ({ many }) => ({
@@ -19,10 +19,11 @@ export type SessionAttributes = Omit<
   "id" | "userId" | "activeExpires" | "idleExpires"
 >;
 export const session = sqliteTable("user_session", {
-  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  userId: integer("user_id", { mode: "number" })
+  id: text("id").primaryKey(),
+  userId: text("user_id")
     .notNull()
     .references(() => user.id),
+
   activeExpires: blob("active_expires", {
     mode: "bigint",
   }).notNull(),
@@ -40,7 +41,7 @@ export const sessionRelations = relations(session, ({ one }) => ({
 export type Key = InferModel<typeof key>;
 export const key = sqliteTable("user_key", {
   id: text("id").primaryKey(),
-  userId: integer("user_id", { mode: "number" })
+  userId: text("user_id")
     .notNull()
     .references(() => user.id),
   hashedPassword: text("hashed_password"),
