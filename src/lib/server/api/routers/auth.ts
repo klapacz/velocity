@@ -31,6 +31,7 @@ export const authRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const authRequest = auth.handleRequest(ctx);
       const key = await auth.useKey("email", input.email, input.password);
+      await auth.deleteDeadUserSessions(key.userId);
       const session = await auth.createSession({
         userId: key.userId,
         attributes: {},
@@ -45,6 +46,7 @@ export const authRouter = createTRPCRouter({
     if (!session) {
       return null;
     }
+    await auth.deleteDeadUserSessions(session.user.userId);
     await auth.invalidateSession(session.sessionId);
     authRequest.setSession(null);
     return null;
