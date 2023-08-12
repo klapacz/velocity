@@ -1,4 +1,4 @@
-import { InferModel, relations } from "drizzle-orm";
+import { type InferModel, relations } from "drizzle-orm";
 import { sqliteTable, text, blob } from "drizzle-orm/sqlite-core";
 
 export type User = InferModel<typeof user>;

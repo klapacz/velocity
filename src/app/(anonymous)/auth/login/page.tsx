@@ -1,3 +1,5 @@
+"use client";
+
 import { AuthLoginForm } from "@/components/forms/auth-login-form";
 
 export default function Login() {

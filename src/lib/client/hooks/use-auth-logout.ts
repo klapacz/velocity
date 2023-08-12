@@ -1,7 +1,7 @@
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { api } from "../api";
 
-export function authLogout() {
+export function useAuthLogout() {
   const router = useRouter();
   const logout = api.auth.logout.useMutation({
     onSuccess() {

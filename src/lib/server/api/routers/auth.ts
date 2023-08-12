@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "@/lib/server/api/trpc";
-import { auth } from "../../lucia";
+import { auth } from "@/lib/server/auth/lucia";
 
 const credentialsSchema = z.object({
   email: z.string().email().trim().toLowerCase(),
@@ -41,7 +41,22 @@ export const authRouter = createTRPCRouter({
     }),
   logout: publicProcedure.mutation(async ({ ctx }) => {
     const authRequest = auth.handleRequest(ctx);
+    const session = await authRequest.validate();
+    if (!session) {
+      return null;
+    }
+    await auth.invalidateSession(session.sessionId);
     authRequest.setSession(null);
     return null;
+  }),
+  session: publicProcedure.query(async ({ ctx }) => {
+    const authRequest = auth.handleRequest(ctx);
+    const session = await authRequest.validate();
+    return session
+      ? {
+          email: session.user.email,
+          userId: session.user.userId,
+        }
+      : null;
   }),
 });

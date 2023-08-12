@@ -1,3 +1,5 @@
+"use client";
+
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -12,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/client/api";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -19,10 +22,10 @@ const formSchema = z.object({
 });
 
 export function AuthLoginForm() {
+  const router = useRouter();
   const login = api.auth.login.useMutation({
-    onSuccess: (data) => {
-      console.log("Logged in…");
-      console.log(data);
+    onSuccess: () => {
+      router.push("/");
     },
   });
 
@@ -45,7 +48,7 @@ export function AuthLoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={() => form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="email"

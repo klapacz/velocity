@@ -1,6 +1,6 @@
 import { lucia } from "lucia";
 import { libsql } from "@lucia-auth/adapter-sqlite";
-import { dbClient } from "./db/client";
+import { dbClient } from "@/lib/server/db/client";
 import { nextjs } from "lucia/middleware";
 import { env } from "@/env.mjs";
 
