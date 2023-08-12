@@ -11,7 +11,7 @@ const env = z
   .parse(process.env);
 
 export default {
-  schema: "./src/server/db/schema.ts",
+  schema: "./src/lib/server/db/schema.ts",
   driver: "turso",
   dbCredentials: {
     url: env.DATABASE_URL,

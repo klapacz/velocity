@@ -1,19 +1,23 @@
-// import { env } from "@/env.mjs";
-// import { createClient } from "@libsql/client";
-//
-// const db = createClient({
-//   url: env.DATABASE_URL,
-//   authToken: env.DATABASE_AUTH_TOKEN,
-// });
-//
-
+import { InferModel, relations } from "drizzle-orm";
 import { sqliteTable, text, blob, integer } from "drizzle-orm/sqlite-core";
 
+export type User = InferModel<typeof user>;
+export type UserAttributes = Omit<User, "id">;
 export const user = sqliteTable("user", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  // other user attributes
+  email: text("email").unique(),
 });
 
+export const usersRelations = relations(user, ({ many }) => ({
+  sessions: many(session),
+  keys: many(key),
+}));
+
+export type Session = InferModel<typeof session>;
+export type SessionAttributes = Omit<
+  Session,
+  "id" | "userId" | "activeExpires" | "idleExpires"
+>;
 export const session = sqliteTable("user_session", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   userId: integer("user_id", { mode: "number" })
@@ -26,7 +30,14 @@ export const session = sqliteTable("user_session", {
     mode: "bigint",
   }).notNull(),
 });
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(user, {
+    fields: [session.userId],
+    references: [user.id],
+  }),
+}));
 
+export type Key = InferModel<typeof key>;
 export const key = sqliteTable("user_key", {
   id: text("id").primaryKey(),
   userId: integer("user_id", { mode: "number" })
@@ -34,3 +45,9 @@ export const key = sqliteTable("user_key", {
     .references(() => user.id),
   hashedPassword: text("hashed_password"),
 });
+export const keyRelations = relations(key, ({ one }) => ({
+  user: one(user, {
+    fields: [key.userId],
+    references: [user.id],
+  }),
+}));
