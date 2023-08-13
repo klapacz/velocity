@@ -52,7 +52,7 @@ export function AuthLoginForm() {
   return (
     <Card>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={(e) => form.handleSubmit(onSubmit)(e)}>
           <CardHeader>
             <CardTitle>
               <h1>Login</h1>
